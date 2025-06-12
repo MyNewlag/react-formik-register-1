@@ -1,17 +1,18 @@
 import React from 'react';
 import { useFormik } from 'formik'
+import * as yup from 'yup';
 
-const Registerform = () => {
-    const formik = useFormik({
-        initialValues:{
+const initialValues={
             name: '',
             email: '',
             password: '',
-        },
-        onSubmit: (values)=>{
-            console.log(values);
-        },
-        validate: (values)=>{
+        }
+        const onSubmit= (values)=>{
+            console.log(values)
+        }
+ 
+
+        const validate= (values)=>{
             let errors={}
 
             if (!values.name) {
@@ -30,6 +31,20 @@ const Registerform = () => {
 
             return errors
         }
+
+        const validationSchema=yup.object({
+            name:yup.string().required("نام را وارد کن"),
+            email:yup.string().required('ایمیل را وارد کن').email('به صورت قالب ایمیل وارد کن'),
+            password:yup.string().required('پسورد را وارد کن')
+        })
+
+
+const Registerform = () => {
+    const formik = useFormik({
+        initialValues,
+        onSubmit,
+        // validate,
+        validationSchema
     })
 
     console.log(formik);
@@ -46,7 +61,8 @@ const Registerform = () => {
                         <div className="mb-3">
                             <label htmlFor="name" className="form-label">نام</label>
                             <input type="text" className="form-control" id="name" name='name'
-                            value={formik.values.name} onChange={formik.handleChange} onBlur={formik.handleBlur}
+                            // value={formik.values.name} onChange={formik.handleChange} onBlur={formik.handleBlur}
+                            {...formik.getFieldProps("name")}
                             />
                             {formik.errors.name && formik.touched.name ? (
                                 <small className='d-block text-center text-danger'>{formik.errors.name}</small>
@@ -55,7 +71,7 @@ const Registerform = () => {
                         <div className="mb-3">
                             <label htmlFor="email" className="form-label">ایمیل</label>
                             <input type="email" className="form-control" id="email" name='email'
-                            value={formik.values.email} onChange={formik.handleChange} onBlur={formik.handleBlur}
+                            {...formik.getFieldProps("email")}
                             />
                               {formik.errors.email && formik.touched.email ? (
                                 <small className='d-block text-center text-danger'>{formik.errors.email}</small>
@@ -64,7 +80,7 @@ const Registerform = () => {
                         <div className="mb-3">
                             <label htmlFor="password" className="form-label">رمز عبور</label>
                             <input type="password" className="form-control" id="password" name='password'
-                            value={formik.values.password} onChange={formik.handleChange} onBlur={formik.handleBlur}
+                            {...formik.getFieldProps("password")}
                             />
                               {formik.errors.password && formik.touched.password ? (
                                 <small className='d-block text-center text-danger'>{formik.errors.password}</small>
