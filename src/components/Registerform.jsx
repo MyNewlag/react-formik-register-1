@@ -1,5 +1,5 @@
 import React from 'react';
-import { ErrorMessage, FastField, Field, FieldArray, Form, Formik } from 'formik'
+import { ErrorMessage, FastField, Field, FieldArray, Form, Formik, useFormik } from 'formik'
 import * as yup from 'yup';
 import PersonalField from './PersonalField';
 import PersonalError from './PersonalError';
@@ -17,8 +17,12 @@ const initialValues={
             phone:['',''],
             favorats:['']
         }
-        const onSubmit= (values)=>{
+        const onSubmit= (values,props)=>{
             console.log(values)
+            console.log(props)
+            setTimeout(()=>{
+                props.setSubmitting(false)
+            },3000)
         }
  
 
@@ -56,11 +60,12 @@ const initialValues={
 
 
 const Registerform = () => {
+
     // const formik = useFormik({
-        // initialValues,
-        // onSubmit,
-        // // validate,
-        // validationSchema
+    //     initialValues,
+    //     onSubmit,
+    //     // validate,
+    //     validationSchema
     // })
 
     return (
@@ -68,8 +73,13 @@ const Registerform = () => {
         initialValues={initialValues}
         onSubmit={onSubmit}
         validationSchema={validationSchema}
+        // validateOnMount
         >
-        <div className='auth_container container-fluid d-flex justify-content-center align-items-center w-100 h-100-vh p-0'>
+       {formik=>{
+        console.log(formik);
+        
+        return(
+             <div className='auth_container container-fluid d-flex justify-content-center align-items-center w-100 h-100-vh p-0'>
             <div className="row w-100 justify-content-center align-items-center">
                 <div className='auth_box col-11 col-md-8 col-lg-6 col-xl-4 py-4 px-3'>
                     <Form className='row'>
@@ -139,12 +149,27 @@ const Registerform = () => {
 
 
                         <div className='text-center w-100'>
-                            <button type="submit" className="btn btn-primary">ثبت نام</button>
+                           
+                               <button type="submit" className="btn btn-primary" disabled={!(formik.dirty&&formik.isValid) || formik.isSubmitting}>
+                                {
+                                    formik.isSubmitting ? (
+                                        <div>
+                                             <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                            <span className="sr-only">Loading...</span> 
+                                        </div>                              
+                                    ):("ثبت نام")
+                                }
+                               </button>
+
                         </div>
                    </Form>
                 </div>
             </div>
         </div>
+        )
+       }
+
+       }
         </Formik>
     );
 }
